@@ -111,14 +111,13 @@ def get_llm(
             model=model,
             temperature=temperature,
         )
-
-    # elif source == "Bedrock":
-    #     return ChatBedrock(
-    #         model=model,
-    #         temperature=temperature,
-    #         stop_sequences=stop_sequences,
-    #         region_name=os.getenv("AWS_REGION", "us-east-1"),
-    #     )
+    elif source == "Bedrock":
+        return ChatBedrock(
+            model=model,
+            temperature=temperature,
+            stop_sequences=stop_sequences,
+            region_name=os.getenv("AWS_REGION", "us-east-1"),
+        )
     elif source == "Custom":
         # Custom LLM serving such as SGLang. Must expose an openai compatible API.
         assert base_url is not None, "base_url must be provided for customly served LLMs"
