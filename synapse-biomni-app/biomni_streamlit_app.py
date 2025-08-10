@@ -149,120 +149,122 @@ def initialize_session_state():
         st.session_state.processing_task = False
     if 'last_rerun_time' not in st.session_state:
         st.session_state.last_rerun_time = 0
+    if 'execution_counter' not in st.session_state:
+        st.session_state.execution_counter = 0
 
-class StreamlitLogHandler(logging.Handler):
-    """Custom logging handler that sends logs to Streamlit session state"""
+# class StreamlitLogHandler(logging.Handler):
+#     """Custom logging handler that sends logs to Streamlit session state"""
     
-    def __init__(self, log_queue):
-        super().__init__()
-        self.log_queue = log_queue
-        self.setFormatter(logging.Formatter(
-            '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-        ))
+#     def __init__(self, log_queue):
+#         super().__init__()
+#         self.log_queue = log_queue
+#         self.setFormatter(logging.Formatter(
+#             '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+#         ))
     
-    def emit(self, record):
-        try:
-            log_entry = {
-                'timestamp': datetime.fromtimestamp(record.created).strftime("%H:%M:%S"),
-                'level': record.levelname,
-                'name': record.name,
-                'message': record.getMessage()
-            }
-            self.log_queue.put(log_entry)
-        except Exception:
-            self.handleError(record)
+#     def emit(self, record):
+#         try:
+#             log_entry = {
+#                 'timestamp': datetime.fromtimestamp(record.created).strftime("%H:%M:%S"),
+#                 'level': record.levelname,
+#                 'name': record.name,
+#                 'message': record.getMessage()
+#             }
+#             self.log_queue.put(log_entry)
+#         except Exception:
+#             self.handleError(record)
 
-def setup_logging():
-    """Setup logging configuration for real-time streaming"""
-    if 'logging_configured' not in st.session_state:
-        # Create a custom handler for Streamlit
-        handler = StreamlitLogHandler(st.session_state.log_queue)
+# def setup_logging():
+#     """Setup logging configuration for real-time streaming"""
+#     if 'logging_configured' not in st.session_state:
+#         # Create a custom handler for Streamlit
+#         handler = StreamlitLogHandler(st.session_state.log_queue)
         
-        # Configure root logger
-        root_logger = logging.getLogger()
-        root_logger.setLevel(logging.INFO)
+#         # Configure root logger
+#         root_logger = logging.getLogger()
+#         root_logger.setLevel(logging.INFO)
         
-        # Remove existing handlers to avoid duplicates
-        for existing_handler in root_logger.handlers[:]:
-            root_logger.removeHandler(existing_handler)
+#         # Remove existing handlers to avoid duplicates
+#         for existing_handler in root_logger.handlers[:]:
+#             root_logger.removeHandler(existing_handler)
         
-        # Add our custom handler
-        root_logger.addHandler(handler)
+#         # Add our custom handler
+#         root_logger.addHandler(handler)
         
-        # Configure specific loggers that might be used by Biomni
-        loggers_to_configure = ['biomni', 'synapseclient', 'urllib3', 'requests']
-        for logger_name in loggers_to_configure:
-            logger = logging.getLogger(logger_name)
-            logger.setLevel(logging.INFO)
-            logger.addHandler(handler)
+#         # Configure specific loggers that might be used by Biomni
+#         loggers_to_configure = ['biomni', 'synapseclient', 'urllib3', 'requests']
+#         for logger_name in loggers_to_configure:
+#             logger = logging.getLogger(logger_name)
+#             logger.setLevel(logging.INFO)
+#             logger.addHandler(handler)
         
-        st.session_state.logging_configured = True
+#         st.session_state.logging_configured = True
 
-def get_log_level_color(level):
-    """Get color for log level"""
-    colors = {
-        'DEBUG': '#6c757d',
-        'INFO': '#17a2b8', 
-        'WARNING': '#ffc107',
-        'ERROR': '#dc3545',
-        'CRITICAL': '#721c24'
-    }
-    return colors.get(level, '#000000')
+# def get_log_level_color(level):
+#     """Get color for log level"""
+#     colors = {
+#         'DEBUG': '#6c757d',
+#         'INFO': '#17a2b8', 
+#         'WARNING': '#ffc107',
+#         'ERROR': '#dc3545',
+#         'CRITICAL': '#721c24'
+#     }
+#     return colors.get(level, '#000000')
 
-def display_log_message(log_entry):
-    """Display a single log message with proper styling and formatting"""
-    color = get_log_level_color(log_entry['level'])
+# def display_log_message(log_entry):
+#     """Display a single log message with proper styling and formatting"""
+#     color = get_log_level_color(log_entry['level'])
     
-    # Format the message for better readability
-    message = format_log_message(log_entry['message'])
+#     # Format the message for better readability
+#     message = format_log_message(log_entry['message'])
     
-    # Choose appropriate icon based on log level
-    icon = {
-        'INFO': 'ℹ️',
-        'WARNING': '⚠️', 
-        'ERROR': '❌',
-        'CRITICAL': '🚨',
-        'DEBUG': '🔍'
-    }.get(log_entry['level'], '📝')
+#     # Choose appropriate icon based on log level
+#     icon = {
+#         'INFO': 'ℹ️',
+#         'WARNING': '⚠️', 
+#         'ERROR': '❌',
+#         'CRITICAL': '🚨',
+#         'DEBUG': '🔍'
+#     }.get(log_entry['level'], '📝')
     
-    st.markdown(f"""
-    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 0.85em; 
-                padding: 0.4rem; margin: 0.2rem 0; border-left: 4px solid {color}; 
-                background-color: {color}10; border-radius: 4px;">
-        <div style="display: flex; align-items: center; margin-bottom: 0.2rem;">
-            <span style="margin-right: 0.5rem;">{icon}</span>
-            <span style="color: #666; font-size: 0.8em;">{log_entry['timestamp']}</span>
-            <span style="color: {color}; font-weight: bold; margin-left: 0.5rem;">{log_entry['level']}</span>
-            <span style="color: #888; margin-left: 0.5rem; font-size: 0.8em;">({log_entry['name']})</span>
-        </div>
-        <div style="color: #333; margin-left: 1.5rem;">{message}</div>
-    </div>
-    """, unsafe_allow_html=True)
+#     st.markdown(f"""
+#     <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 0.85em; 
+#                 padding: 0.4rem; margin: 0.2rem 0; border-left: 4px solid {color}; 
+#                 background-color: {color}10; border-radius: 4px;">
+#         <div style="display: flex; align-items: center; margin-bottom: 0.2rem;">
+#             <span style="margin-right: 0.5rem;">{icon}</span>
+#             <span style="color: #666; font-size: 0.8em;">{log_entry['timestamp']}</span>
+#             <span style="color: {color}; font-weight: bold; margin-left: 0.5rem;">{log_entry['level']}</span>
+#             <span style="color: #888; margin-left: 0.5rem; font-size: 0.8em;">({log_entry['name']})</span>
+#         </div>
+#         <div style="color: #333; margin-left: 1.5rem;">{message}</div>
+#     </div>
+#     """, unsafe_allow_html=True)
 
-def format_log_message(message):
-    """Format log message for better readability"""
-    # Handle file paths and make them more readable
-    if 'syn' in message.lower() and ('download' in message.lower() or 'upload' in message.lower()):
-        message = f"🔄 <strong>Synapse Operation:</strong> {message}"
-    elif 'plot' in message.lower() or 'chart' in message.lower() or 'visualization' in message.lower():
-        message = f"📊 <strong>Visualization:</strong> {message}"
-    elif 'error' in message.lower() or 'failed' in message.lower():
-        message = f"❌ <strong>Error:</strong> {message}"
-    elif 'success' in message.lower() or 'completed' in message.lower():
-        message = f"✅ <strong>Success:</strong> {message}"
-    elif 'starting' in message.lower() or 'initializing' in message.lower():
-        message = f"🚀 <strong>Starting:</strong> {message}"
-    elif 'file' in message.lower() and ('save' in message.lower() or 'write' in message.lower()):
-        message = f"💾 <strong>File Operation:</strong> {message}"
-    elif 'data' in message.lower() and ('load' in message.lower() or 'read' in message.lower()):
-        message = f"📁 <strong>Data Loading:</strong> {message}"
+# def format_log_message(message):
+#     """Format log message for better readability"""
+#     # Handle file paths and make them more readable
+#     if 'syn' in message.lower() and ('download' in message.lower() or 'upload' in message.lower()):
+#         message = f"🔄 <strong>Synapse Operation:</strong> {message}"
+#     elif 'plot' in message.lower() or 'chart' in message.lower() or 'visualization' in message.lower():
+#         message = f"📊 <strong>Visualization:</strong> {message}"
+#     elif 'error' in message.lower() or 'failed' in message.lower():
+#         message = f"❌ <strong>Error:</strong> {message}"
+#     elif 'success' in message.lower() or 'completed' in message.lower():
+#         message = f"✅ <strong>Success:</strong> {message}"
+#     elif 'starting' in message.lower() or 'initializing' in message.lower():
+#         message = f"🚀 <strong>Starting:</strong> {message}"
+#     elif 'file' in message.lower() and ('save' in message.lower() or 'write' in message.lower()):
+#         message = f"💾 <strong>File Operation:</strong> {message}"
+#     elif 'data' in message.lower() and ('load' in message.lower() or 'read' in message.lower()):
+#         message = f"📁 <strong>Data Loading:</strong> {message}"
     
-    # Check for file extensions and highlight them
-    import re
-    file_pattern = r'([^\s]+\.(csv|json|png|jpg|jpeg|pdf|xlsx|txt|py|ipynb))'
-    message = re.sub(file_pattern, r'<code style="background:#e9ecef; padding:1px 3px; border-radius:2px;">\1</code>', message, flags=re.IGNORECASE)
+#     # Check for file extensions and highlight them
+#     import re
+#     file_pattern = r'([^\s]+\.(csv|json|png|jpg|jpeg|pdf|xlsx|txt|py|ipynb))'
+#     message = re.sub(file_pattern, r'<code style="background:#e9ecef; padding:1px 3px; border-radius:2px;">\1</code>', message, flags=re.IGNORECASE)
     
-    return message
+#     return message
 
 def setup_api_key():
     """Setup Anthropic API key or AWS Bedrock token"""
@@ -2082,7 +2084,7 @@ def create_markdown_pdf_export():
 def main():
     """Main application function"""
     initialize_session_state()
-    setup_logging()
+    #setup_logging()
     
     # Header
     st.markdown('<h1 class="main-header">🧬 Biomni-Synapse Integration</h1>', unsafe_allow_html=True)
@@ -2151,21 +2153,43 @@ def main():
         submit_col1, submit_col2 = st.columns([1, 4])
         
         with submit_col1:
-            submit_button = st.button("🚀 Submit", disabled=not agent_ready)
+            # Show different button state based on processing status
+            if st.session_state.processing_task:
+                st.button("⏳ Processing...", disabled=True)
+            else:
+                submit_button = st.button("🚀 Submit", disabled=not agent_ready)
         
         with submit_col2:
             clear_button = st.button("🗑️ Clear History")
+        
+        # Show processing status
+        if st.session_state.processing_task:
+            st.warning("🤖 **Agent is working on your request...** Please wait and do not submit another query.")
+        elif not agent_ready:
+            st.warning("⚠️ Please configure API key and initialize the agent first.")
         
         if clear_button:
             st.session_state.chat_history = []
             st.rerun()
         
-        # Process submission
-        if submit_button and prompt.strip() and st.session_state.agent and not st.session_state.processing_task:
+        # Process submission - only if submit_button exists (when not processing)
+        if 'submit_button' in locals() and submit_button and prompt.strip() and st.session_state.agent and not st.session_state.processing_task:
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             
             # Set processing flag to prevent duplicate execution
             st.session_state.processing_task = True
+            
+            # Add a unique execution ID to prevent duplicate processing
+            st.session_state.execution_counter += 1
+            execution_id = f"{timestamp}_{st.session_state.execution_counter}_{hash(prompt)}"
+            if hasattr(st.session_state, 'last_execution_id') and st.session_state.last_execution_id == execution_id:
+                st.warning("⚠️ This task is already being processed. Please wait...")
+                st.session_state.processing_task = False
+                return
+            st.session_state.last_execution_id = execution_id
+            
+            # Log execution start with counter
+            logging.info(f"Starting task execution #{st.session_state.execution_counter}: {prompt[:100]}...")
             
             # Clear previous logs
             st.session_state.log_messages = []
@@ -2180,7 +2204,7 @@ def main():
             try:
                 with st.spinner("🤖 Biomni agent is working..."):
                     # Log the start of execution
-                    logging.info(f"Starting task execution: {prompt[:100]}...")
+                    logging.info(f"Executing agent.go() for task #{st.session_state.execution_counter}")
                     
                     # Set up Synapse authentication for the agent if connected
                     synapse_setup_code = ""
@@ -2221,7 +2245,7 @@ except Exception as e:
                     # Execute the agent
                     log = st.session_state.agent.go(enhanced_prompt)
                     
-                    logging.info("Task execution completed successfully")
+                    logging.info(f"Task execution #{st.session_state.execution_counter} completed successfully")
                     
                     # Add AI response to history - preserve original structure
                     st.session_state.chat_history.append({
@@ -2245,8 +2269,11 @@ except Exception as e:
             finally:
                 # Reset processing flag
                 st.session_state.processing_task = False
-                # Only rerun once after task completion
-                st.rerun()
+                # Clear the execution ID to allow new submissions
+                if hasattr(st.session_state, 'last_execution_id'):
+                    delattr(st.session_state, 'last_execution_id')
+                # Removed automatic rerun to prevent duplicate executions
+                # st.rerun() - User can manually refresh if needed
     
     with col2:
         st.subheader("📋 Chat History & Logs")
@@ -2312,15 +2339,15 @@ except Exception as e:
                 except:
                     break
             
-            # Auto-refresh if there are new logs
-            if new_logs_count > 0 and auto_refresh:
+            # Auto-refresh if there are new logs (but only when not processing a task)
+            if new_logs_count > 0 and auto_refresh and not st.session_state.processing_task:
                 # Only rerun if we're not already in a rerun cycle
                 if 'last_rerun_time' not in st.session_state:
                     st.session_state.last_rerun_time = time.time()
                 
-                # Throttle reruns to prevent infinite loops
+                # Throttle reruns to prevent infinite loops and conflicts with task execution
                 current_time = time.time()
-                if current_time - st.session_state.last_rerun_time > 1:  # At least 1 second between reruns
+                if current_time - st.session_state.last_rerun_time > 2:  # Increased to 2 seconds
                     st.session_state.last_rerun_time = current_time
                     st.rerun()
             
