@@ -32,6 +32,18 @@ Biomni is a general-purpose biomedical AI agent designed to autonomously execute
 
 ## Quick Start
 
+### Connecting Synapse to Biomni
+
+The directory named `synapse-biomni-app` contains code to set up a streamlit UI for a Biomni instance connected to Synapse python client. To start up your own instance of Synapse-Biomni UI, follow these steps:
+
+1. Set up an EC2 linux docker instance using Sage Service Catalog. Since the Biomni instance executes code with root permissions, it is advisable to set it up in a restricted sandbox environment instead of your own local machine.
+2. Follow the installation instructions below to set up the right `.env` file with your personal Anthropic API Key. WIP: connecting the app to API Key from Sage's Bedrock account is currently in progress.
+3. After activating biomni_e1 env, install Synapse python-client and setup the `.synapseConfig` file in the EC2 instance properly (in the `~` directory)
+4. Change directory to the `synapse-biomni-app` dir and execute the following:
+```
+(biomni_e1) [ec2-user@ip-10-XX-XX-XX synapse-biomni-app]$ sh launch_app.sh
+```
+
 ### Installation
 
 Our software environment is massive and we provide a single setup.sh script to setup.
