@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-<a href="[https://join.slack.com/t/biomnigroup/shared_invite/zt-38dat07mc-mmDIYzyCrNtV4atULTHRiw](https://biomnigroup.slack.com/archives/C098UNJ1MBQ)">
+<a href="https://biomnigroup.slack.com/archives/C098UNJ1MBQ">
 <img src="https://img.shields.io/badge/Join-Slack-4A154B?style=for-the-badge&logo=slack" alt="Join Slack" />
 </a>
 
