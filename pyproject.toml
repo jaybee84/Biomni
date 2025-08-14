@@ -16,8 +16,6 @@ dependencies = [
     "pydantic",
     "langchain",
     "python-dotenv",
-    "synapseclient==4.9.0",
-    "streamlit==1.48.1",
 ]
 
 [project.urls]

@@ -21,13 +21,13 @@ if ! command -v streamlit &> /dev/null; then
 fi
 
 # Check if requirements are met
-echo "📋 Checking requirements..."
-if [ -f "requirements_streamlit.txt" ]; then
-    echo "   Installing/updating dependencies..."
-    pip install -r requirements_streamlit.txt
-else
-    echo "⚠️  Warning: requirements_streamlit.txt not found"
-fi
+# echo "📋 Checking requirements..."
+# if [ -f "requirements_streamlit.txt" ]; then
+#     echo "   Installing/updating dependencies..."
+#     pip install -r requirements_streamlit.txt
+# else
+#     echo "⚠️  Warning: requirements_streamlit.txt not found"
+# fi
 
 # Set up environment
 echo "🔧 Setting up environment..."

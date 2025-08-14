@@ -1,0 +1,28 @@
+[project]
+name = "synapse-biomni-app"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "anthropic>=0.59.0",
+    "biomni",
+    "langchain>=0.3.27",
+    "langchain-anthropic>=0.3.17",
+    "langchain-aws>=0.2.30",
+    "langchain-google-genai>=2.1.9",
+    "langchain-ollama>=0.3.6",
+    "langchain-openai>=0.3.30",
+    "langgraph>=0.6.4",
+    "matplotlib>=3.5.0",
+    "openai>=1.99.9",
+    "pandas>=2.0.0",
+    "plotly>=5.0.0",
+    "python-dotenv>=1.0.0",
+    "seaborn>=0.11.0",
+    "streamlit>=1.28.0",
+    "synapseclient>=3.0.0",
+]
+
+[tool.uv.sources]
+biomni = { path = "../", editable = true }
