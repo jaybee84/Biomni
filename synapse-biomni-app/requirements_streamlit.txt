@@ -1,9 +1,11 @@
 # Requirements for Biomni Streamlit Application
+# Note: This app uses the local development version of biomni via editable install
+# Use: uv add --editable ../ to install the local biomni package
+
 streamlit>=1.28.0
-biomni>=0.0.4
 python-dotenv>=1.0.0
 synapseclient>=3.0.0
-synapseutils>=0.5.0
+# synapseutils>=0.5.0
 anthropic>=0.59.0
 langchain>=0.3.27
 langchain-anthropic>=0.3.17

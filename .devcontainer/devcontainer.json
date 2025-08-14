@@ -1,0 +1,32 @@
+{
+  "name": "Biomni Dev Container",
+  "image": "ghcr.io/sage-bionetworks/sage-monorepo-devcontainer:sha-6269b9b3d863831c296f843edd84b2c7e1d4733d",
+  "containerEnv": {},
+  "features": {},
+  "forwardPorts": [],
+  "portsAttributes": {},
+  "otherPortsAttributes": {
+    "onAutoForward": "silent"
+  },
+  "shutdownAction": "stopContainer",
+  "runArgs": ["--name", "biomni-devcontainer"],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "alefragnani.Bookmarks",
+        "eamodio.gitlens",
+        "emeraldwalk.RunOnSave",
+        "exiasr.hadolint",
+        "github.vscode-github-actions",
+        "GitHub.vscode-pull-request-github",
+        "Gruntfuggly.todo-tree",
+        "mhutchie.git-graph",
+        "ms-python.black-formatter",
+        "ms-python.python",
+        "njpwerner.autodocstring",
+        "ritwickdey.LiveServer",
+        "stkb.rewrap"
+      ]
+    }
+  }
+}
